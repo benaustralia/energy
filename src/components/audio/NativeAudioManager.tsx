@@ -1,31 +1,6 @@
 import { createNativeBeep, noteToFrequency, COURSE_CLEAR_MELODY } from '@/lib/audioUtils';
 
 export const createNativeAudioManager = () => {
-  // Simple sound effect using Web Audio API
-  const createSimpleBeep = async () => {
-    try {
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-      if (audioContext.state === 'suspended') await audioContext.resume();
-      
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      const startTime = audioContext.currentTime;
-      oscillator.frequency.setValueAtTime(400, startTime);
-      oscillator.frequency.exponentialRampToValueAtTime(600, startTime + 0.1);
-      gainNode.gain.setValueAtTime(0.3, startTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 0.2);
-      oscillator.type = 'sine';
-      
-      oscillator.start(startTime);
-      oscillator.stop(startTime + 0.2);
-    } catch (e) {
-      console.error('Sound effect failed:', e);
-    }
-  };
-
   const playNativeSafariSound = async () => {
     try {
       // Create different frequency beeps for variety
