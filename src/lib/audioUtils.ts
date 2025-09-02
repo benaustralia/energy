@@ -1,6 +1,11 @@
 // Convert note names to frequencies
 export const noteToFrequency = (note: string): number => {
   const noteMap: { [key: string]: number } = {
+    // Octave 4 (for score feedback)
+    'C4': 261.63, 'E4': 329.63, 'G4': 392.00,
+    'E3': 164.81, 'C3': 130.81, 'A2': 110.00,
+    'E2': 82.41, 'C2': 65.41, 'A1': 55.00,
+    // Octave 5 and 6 (for Mario melody)
     'C5': 523.25, 'E5': 659.25, 'G5': 783.99, 'C6': 1046.50,
     'E6': 1318.51, 'G6': 1567.98, 'Ab5': 830.61, 'Bb5': 932.33
   };

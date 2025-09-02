@@ -76,6 +76,29 @@ export const createNativeAudioManager = () => {
     }
   };
 
+  const playNativeNotes = async (notes: string[] = ['C4', 'E4', 'G4']) => {
+    try {
+      console.log('Safari playing notes:', notes);
+      // Convert notes to frequencies and play in sequence
+      notes.forEach((note, i) => {
+        setTimeout(() => {
+          const freq = noteToFrequency(note);
+          console.log(`Safari playing note ${note} at frequency ${freq}Hz`);
+          const audioUrl = createNativeBeep(freq, 200);
+          const audio = new Audio(audioUrl);
+          audio.volume = 0.4;
+          audio.play().then(() => {
+            console.log(`Successfully played ${note} at ${freq}Hz`);
+          }).catch(e => console.log('Native note failed:', e));
+          // Clean up the URL after playing
+          setTimeout(() => URL.revokeObjectURL(audioUrl), 1000);
+        }, i * 150); // 150ms between notes
+      });
+    } catch (e) {
+      console.log('Native notes failed:', e);
+    }
+  };
+
   const playBeepBoop = async () => {
     await playNativeSafariSound();
   };
@@ -85,7 +108,7 @@ export const createNativeAudioManager = () => {
   };
 
   return {
-    playSound: createSimpleBeep,
+    playSound: playNativeNotes,
     playBeepBoop,
     playMarioSuccess
   };

@@ -7,8 +7,9 @@ export const AudioManager = () => {
   const nativeManager = createNativeAudioManager();
   
   const playSound = async (notes?: string[]) => {
+    console.log('AudioManager playSound called with notes:', notes, 'Safari detected:', isSafari());
     if (isSafari()) {
-      await nativeManager.playSound();
+      await nativeManager.playSound(notes);
     } else {
       await toneManager.playSound(notes);
     }
