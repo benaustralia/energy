@@ -1,17 +1,12 @@
 import { useRef, useEffect } from 'react';
 import * as Tone from 'tone';
 
-export interface AudioManagerProps {
-  onAudioReady?: () => void;
-}
-
-export const AudioManager = ({ onAudioReady }: AudioManagerProps) => {
+export const AudioManager = () => {
   const synthRef = useRef<Tone.Synth | null>(null);
 
   useEffect(() => {
     synthRef.current = new Tone.Synth().toDestination();
-    onAudioReady?.();
-  }, [onAudioReady]);
+  }, []);
 
     const playSound = async (notes = ['C4', 'E4', 'G4']) => {
     if (!synthRef.current) return;
@@ -23,8 +18,8 @@ export const AudioManager = ({ onAudioReady }: AudioManagerProps) => {
 
 
 
-  // Create crazy sound effects using Web Audio API (Chrome only)
-  const createSoundEffect = async (type: string) => {
+  // Simple sound effect using Web Audio API
+  const createSimpleBeep = async () => {
     try {
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       if (audioContext.state === 'suspended') await audioContext.resume();
@@ -35,64 +30,14 @@ export const AudioManager = ({ onAudioReady }: AudioManagerProps) => {
       gainNode.connect(audioContext.destination);
       
       const startTime = audioContext.currentTime;
-      
-      switch (type) {
-        case 'door_slam':
-          oscillator.frequency.setValueAtTime(150, startTime);
-          oscillator.frequency.exponentialRampToValueAtTime(80, startTime + 0.02);
-          oscillator.frequency.setValueAtTime(200, startTime + 0.05);
-          oscillator.frequency.exponentialRampToValueAtTime(60, startTime + 0.15);
-          gainNode.gain.setValueAtTime(0.8, startTime);
-          gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 0.15);
-          oscillator.type = 'square';
-          break;
-        case 'dog_bark':
-          oscillator.frequency.setValueAtTime(300, startTime);
-          oscillator.frequency.exponentialRampToValueAtTime(800, startTime + 0.05);
-          oscillator.frequency.exponentialRampToValueAtTime(200, startTime + 0.1);
-          oscillator.frequency.exponentialRampToValueAtTime(600, startTime + 0.15);
-          gainNode.gain.setValueAtTime(0.5, startTime);
-          gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 0.2);
-          oscillator.type = 'sawtooth';
-          break;
-        case 'rubber_duck':
-          oscillator.frequency.setValueAtTime(800, startTime);
-          oscillator.frequency.linearRampToValueAtTime(600, startTime + 0.1);
-          oscillator.frequency.linearRampToValueAtTime(800, startTime + 0.15);
-          gainNode.gain.setValueAtTime(0.4, startTime);
-          gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 0.15);
-          oscillator.type = 'sine';
-          break;
-        case 'door_creak':
-          oscillator.frequency.setValueAtTime(200, startTime);
-          for (let i = 0; i < 8; i++) {
-            oscillator.frequency.setValueAtTime(200 + i * 15, startTime + i * 0.06);
-            oscillator.frequency.setValueAtTime(180 + i * 12, startTime + i * 0.06 + 0.03);
-          }
-          gainNode.gain.setValueAtTime(0.3, startTime);
-          gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 0.48);
-          oscillator.type = 'sawtooth';
-          break;
-        case 'spring_boing':
-          oscillator.frequency.setValueAtTime(400, startTime);
-          for (let i = 0; i < 6; i++) {
-            oscillator.frequency.exponentialRampToValueAtTime(Math.max(100, 200 - i * 20), startTime + i * 0.05 + 0.025);
-            oscillator.frequency.setValueAtTime(Math.max(120, 400 - i * 40), startTime + i * 0.05 + 0.05);
-          }
-          gainNode.gain.setValueAtTime(0.5, startTime);
-          gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 0.3);
-          break;
-        case 'cartoon_slip':
-          oscillator.frequency.setValueAtTime(800, startTime);
-          oscillator.frequency.linearRampToValueAtTime(200, startTime + 0.25);
-          gainNode.gain.setValueAtTime(0.4, startTime);
-          gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 0.25);
-          oscillator.type = 'sine';
-          break;
-      }
+      oscillator.frequency.setValueAtTime(400, startTime);
+      oscillator.frequency.exponentialRampToValueAtTime(600, startTime + 0.1);
+      gainNode.gain.setValueAtTime(0.3, startTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 0.2);
+      oscillator.type = 'sine';
       
       oscillator.start(startTime);
-      oscillator.stop(startTime + 0.5);
+      oscillator.stop(startTime + 0.2);
     } catch (e) {
       console.error('Sound effect failed:', e);
     }
@@ -169,13 +114,8 @@ export const AudioManager = ({ onAudioReady }: AudioManagerProps) => {
       // Safari: Use native HTML5 Audio with generated WAV files
       await playNativeSafariSound();
     } else {
-      // Chrome: Crazy sound effects
-      const soundEffects = [
-        'door_slam', 'dog_bark', 'rubber_duck', 'door_creak', 
-        'spring_boing', 'cartoon_slip'
-      ];
-      const randomEffect = soundEffects[Math.floor(Math.random() * soundEffects.length)];
-      await createSoundEffect(randomEffect);
+      // Chrome: Simple beep sound
+      await createSimpleBeep();
     }
   };
 
