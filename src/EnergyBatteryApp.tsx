@@ -10,8 +10,22 @@ import { MAX_STUDENTS, CONFETTI_DURATION, AUDIO_INIT_DELAY } from '@/lib/constan
 import { getFontForName, getEmojiForName, getColor, calculateAverage, allStudentsHaveScore } from '@/lib/energyUtils';
 
 export default function EnergyBatteryApp() {
-  const [step, setStep] = useState(1), [input, setInput] = useState(''), [names, setNames] = useState<string[]>([]), [students, setStudents] = useState<{ name: string; score: number }[]>([]), [editIndex, setEditIndex] = useState(-1), [editValue, setEditValue] = useState(''), [animatingName, setAnimatingName] = useState(''), [scoreDialogOpen, setScoreDialogOpen] = useState(false), [selectedStudentIndex, setSelectedStudentIndex] = useState(-1), [tempScore, setTempScore] = useState(''), [hoveredStudent, setHoveredStudent] = useState<string>(''), [showConfetti, setShowConfetti] = useState(false);
-  const audioRef = useRef<any>(null), nameFontsRef = useRef<{ [key: string]: string }>({}), inputRef = useRef<HTMLTextAreaElement>(null);
+  const [step, setStep] = useState(1);
+  const [input, setInput] = useState('');
+  const [names, setNames] = useState<string[]>([]);
+  const [students, setStudents] = useState<{ name: string; score: number }[]>([]);
+  const [editIndex, setEditIndex] = useState(-1);
+  const [editValue, setEditValue] = useState('');
+  const [animatingName, setAnimatingName] = useState('');
+  const [scoreDialogOpen, setScoreDialogOpen] = useState(false);
+  const [selectedStudentIndex, setSelectedStudentIndex] = useState(-1);
+  const [tempScore, setTempScore] = useState('');
+  const [hoveredStudent, setHoveredStudent] = useState<string>('');
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  const audioRef = useRef<any>(null);
+  const nameFontsRef = useRef<{ [key: string]: string }>({});
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const getFontForNameMemo = useCallback((name: string) => getFontForName(name, nameFontsRef.current), []);
   const getEmojiForNameMemo = useCallback((name: string) => getEmojiForName(name, nameFontsRef.current, [...names, ...students.map(s => s.name)]), [names, students]);
@@ -112,6 +126,8 @@ export default function EnergyBatteryApp() {
       )}
 
       <ConfettiOverlay showConfetti={showConfetti} />
+      
+      <div className="fixed bottom-2 left-2 text-xs text-gray-400">Version 1.1</div>
 
       <Dialog.Root open={scoreDialogOpen} onOpenChange={(open) => { if (!open && tempScore) { const score = parseInt(tempScore) || 0; if (score >= 1 && score <= 10) { setStudents(prev => prev.map((s, i) => i === selectedStudentIndex ? { ...s, score } : s)); playScoreSound(score); } } setScoreDialogOpen(open); }}>
         <Dialog.Portal>
