@@ -64,6 +64,7 @@ export default function EnergyBatteryApp() {
               <div onClick={() => {if (names.length > 0) {setStudents(names.map(name => ({ name, score: 0 }))); setStep(2);}}} style={{ cursor: names.length === 0 ? 'not-allowed' : 'pointer' }} className="hover:scale-110 transition-transform duration-200">
                 <img src="/images/lightening_bolts_2.svg" alt="Lightning bolts" style={{ width: '440px', height: '440px' }} />
               </div>
+              <div className="text-xs text-gray-400 mt-2 mb-4">click lightning bolts when done adding names</div>
               <div className="mt-0">
                 <textarea ref={inputRef} value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && addName()} placeholder="names" disabled={!!animatingName} autoFocus className="fluid-input text-center border-8 rounded-3xl shadow-2xl px-12 resize-none border border-input bg-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" style={{ fontSize: '8rem', lineHeight: '1.2', paddingTop: '2rem', paddingBottom: '2rem' }} />
               </div>
@@ -127,7 +128,7 @@ export default function EnergyBatteryApp() {
 
       <ConfettiOverlay showConfetti={showConfetti} />
       
-      <div className="fixed bottom-2 left-2 text-xs text-gray-400">Version 1.1</div>
+      <div className="fixed bottom-2 left-2 text-xs text-gray-400">Version 1.2</div>
 
       <Dialog.Root open={scoreDialogOpen} onOpenChange={(open) => { if (!open && tempScore) { const score = parseInt(tempScore) || 0; if (score >= 1 && score <= 10) { setStudents(prev => prev.map((s, i) => i === selectedStudentIndex ? { ...s, score } : s)); playScoreSound(score); } } setScoreDialogOpen(open); }}>
         <Dialog.Portal>
